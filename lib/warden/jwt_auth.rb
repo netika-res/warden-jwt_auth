@@ -50,6 +50,14 @@ module Warden
       upcase_first_items(value)
     end
 
+    # A proc (or any object responding to the call(*args) method) that, if returning
+    # truthy when called will force the dispatching a JWT token, even if the current
+    # request does not match any of the dispatch requests. Optional.
+    #
+    # @example
+    # Proc.new { |env| env['FORCE_JWT_DISPATCH'] }
+    setting(:force_dispatch, proc { |_env| false })
+
     # Array of tuples [request_method, request_path_regex] to match request
     # verbs and paths where incoming JWT token should be be revoked
     #

@@ -4,7 +4,7 @@ module Warden
   module JWTAuth
     # Warden hooks
     class Hooks
-      include JWTAuth::Import['mappings', 'dispatch_requests', 'aud_header']
+      include JWTAuth::Import['mappings', 'dispatch_requests', 'force_dispatch', 'aud_header']
 
       # `env` key where JWT is added
       PREPARED_TOKEN_ENV_KEY = 'warden-jwt_auth.token'
@@ -30,7 +30,11 @@ module Warden
       def token_should_be_added?(scope, env)
         path_info = EnvHelper.path_info(env)
         method = EnvHelper.request_method(env)
-        jwt_scope?(scope) && request_matches?(path_info, method)
+        jwt_scope?(scope) && (force_dispatch?(env) || request_matches?(path_info, method))
+      end
+
+      def force_dispatch?(env)
+        force_dispatch.call(env)
       end
 
       # :reek:ManualDispatch
