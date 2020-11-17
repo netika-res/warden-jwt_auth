@@ -21,7 +21,7 @@ You can read about which security concerns this library takes into account and a
 
 If what you need is a JWT authentication library for [devise](https://github.com/plataformatec/devise), better look at [devise-jwt](https://github.com/waiting-for-dev/devise-jwt), which is just a thin layer on top of this gem.
 
-## Installation.
+## Installation
 
 ```ruby
 gem 'warden-jwt_auth', '~> 0.3.5'
