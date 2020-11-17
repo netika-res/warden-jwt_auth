@@ -19,6 +19,26 @@ module Warden
   module JWTAuth
     extend Dry::Configurable
 
+    # @see https://github.com/dry-rb/dry-configurable/blob/master/CHANGELOG.md 
+    # Evaluate setting input immediately when input is provided.
+    # This allows for earlier feedback from constructors designed to raise errors on invalid input (#95) (@timriley)
+    # :reek:UtilityFunction
+    def self.symbolize_keys(hash)
+      Hash[
+        hash.each_pair do |key, value|
+          [key.to_sym, value]
+        end
+      ]
+    end
+
+    # :reek:UtilityFunction
+    def self.upcase_first_items(array)
+      array.map do |tuple|
+        method, path = tuple
+        [method.to_s.upcase, path]
+      end
+    end
+
     # The secret used to encode the token
     setting :secret
 
@@ -81,23 +101,6 @@ module Warden
     # @see Interfaces::RevocationStrategy
     setting(:revocation_strategies, {}) do |value|
       symbolize_keys(value)
-    end
-
-    # :reek:UtilityFunction
-    def self.symbolize_keys(hash)
-      Hash[
-        hash.each_pair do |key, value|
-          [key.to_sym, value]
-        end
-      ]
-    end
-
-    # :reek:UtilityFunction
-    def self.upcase_first_items(array)
-      array.map do |tuple|
-        method, path = tuple
-        [method.to_s.upcase, path]
-      end
     end
 
     Import = Dry::AutoInject(config)
